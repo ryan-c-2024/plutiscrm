@@ -37,7 +37,7 @@ export function getSupabaseCredentials(): { supabaseUrl: string; supabaseAnonKey
 }
 
 
-export function createSupabaseClient() : SupabaseClient{
+export function createSupabaseClient() : SupabaseClient {
   const { supabaseUrl, supabaseAnonKey } = getSupabaseCredentials();
   return createClient(supabaseUrl, supabaseAnonKey);
 }

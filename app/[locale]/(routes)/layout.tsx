@@ -1,13 +1,10 @@
-import { getServerSession } from "next-auth";
 
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
-import Header from "./components/Header";
-import SideBar from "./components/SideBar";
 import Footer from "./components/Footer";
-import getAllCommits from "@/actions/github/get-repo-commits";
 import { Metadata } from "next";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import SideBar from "./components/SideBar";
+import getAllCommits from "@/actions/github/get-repo-commits";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -42,41 +39,32 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-
-  //console.log(session, "session");
-
-  if (!session) {
-    return redirect("/sign-in");
-  }
-
-  const user = session?.user;
-
-  if (user?.userStatus === "PENDING") {
-    return redirect("/pending");
-  }
-
-  if (user?.userStatus === "INACTIVE") {
-    return redirect("/inactive");
-  }
 
   const build = await getAllCommits();
-
   //console.log(typeof build, "build");
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex flex-col justify-center items-center h-screen w-full">
       <SideBar build={build} />
-      <div className="flex flex-col h-full w-full overflow-hidden">
-        <Header
-          id={session.user.id as string}
-          name={session.user.name as string}
-          email={session.user.email as string}
-          avatar={session.user.image as string}
-          lang={session.user.userLanguage as string}
-        />
-        <div className="flex-grow overflow-y-auto h-full p-5">{children}</div>
-        <Footer />
+      <div className="flex justify-end items-center space-x-5 w-full p-5">
+        <ThemeToggle />
       </div>
+      <div className="flex items-center h-full overflow-hidden">{children}</div>
+      <Footer />
     </div>
+
+    // <div className="flex h-screen overflow-hidden">
+    //   <SideBar build={build} />
+    //   <div className="flex flex-col h-full w-full overflow-hidden">
+    //     <Header
+    //       id={session.user.id as string}
+    //       name={session.user.name as string}
+    //       email={session.user.email as string}
+    //       avatar={session.user.image as string}
+    //       lang={session.user.userLanguage as string}
+    //     />
+    //     <div className="flex-grow overflow-y-auto h-full p-5">{children}</div>
+    //     <Footer />
+    //   </div>
+    // </div>
   );
 }

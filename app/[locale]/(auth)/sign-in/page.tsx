@@ -13,7 +13,7 @@ const key = String(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 const supabase = createClient(url, key);
 
-export default async function SignInPage() {
+export default function SignInPage() {
   const router = useRouter();
   const { theme, systemTheme } = useTheme();
   const [authTheme, setAuthTheme] = useState('light');
@@ -31,8 +31,18 @@ export default async function SignInPage() {
 
   // Authentication state change listener
   useEffect(() => {
+    supabase.auth.getUser().then((user) => {
+      if(user) {
+        router.push('/');
+      }
+    })
+    
+
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
+
+        // save access token to session storage
+        // sessionStorage.setItem('supabase.auth.token', session?.access_token || '');
         router.push('/');
       }
     });
