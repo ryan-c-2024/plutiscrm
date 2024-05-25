@@ -20,10 +20,9 @@ import { cn } from "@/lib/utils";
 type Props = {
   modules: any;
   dict: any;
-  build: number;
 };
 
-const ModuleMenu = ({ modules, dict, build }: Props) => {
+const ModuleMenu = ({ modules, dict }: Props) => {
   const [open, setOpen] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -124,9 +123,7 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
           hidden: !open,
         })}
       >
-        <span className="text-xs text-gray-500 pb-2">
-          build: 0.0.3-beta-{build}
-        </span>
+        
       </div>
     </div>
   );
