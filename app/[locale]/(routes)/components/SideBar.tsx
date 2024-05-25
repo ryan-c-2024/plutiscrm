@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getDictionary } from "@/dictionaries";
 
-const SideBar = async () => {
+const SideBar = async ({ build }: { build: number }) => {
   const session = await getServerSession(authOptions);
 
   if (!session) return null;
@@ -22,6 +22,6 @@ const SideBar = async () => {
 
   if (!dict) return null;
 
-  return <ModuleMenu modules={modules} dict={dict} />;
+  return <ModuleMenu modules={modules} dict={dict} build={build} />;
 };
 export default SideBar;
