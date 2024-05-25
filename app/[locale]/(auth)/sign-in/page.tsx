@@ -5,7 +5,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 // Get URL and key
 const url = String(process.env.NEXT_PUBLIC_SUPABASE_URL);
@@ -13,7 +13,7 @@ const key = String(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 const supabase = createClient(url, key);
 
-const SignInPage = () => {
+export default async function SignInPage() {
   const router = useRouter();
   const { theme, systemTheme } = useTheme();
   const [authTheme, setAuthTheme] = useState('light');
@@ -29,11 +29,20 @@ const SignInPage = () => {
     setAuthTheme(resolvedTheme);
   }, [theme, systemTheme]);
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event == 'SIGNED_IN'){
-      router.push('/')
-    } 
-  })
+  // Authentication state change listener
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        router.push('/');
+      }
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      authListener?.subscription?.unsubscribe;
+    };
+  }, [router]);
+
 
   return (
     <div className="h-full">
@@ -53,5 +62,3 @@ const SignInPage = () => {
     </div>
   );
 };
-
-export default SignInPage;
