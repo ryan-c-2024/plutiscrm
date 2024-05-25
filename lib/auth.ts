@@ -5,6 +5,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { newUserNotify } from "./new-user-notify";
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 function getGoogleCredentials(): { clientId: string; clientSecret: string } {
@@ -36,6 +37,10 @@ export function getSupabaseCredentials(): { supabaseUrl: string; supabaseAnonKey
 }
 
 
+export function createSupabaseClient() : SupabaseClient{
+  const { supabaseUrl, supabaseAnonKey } = getSupabaseCredentials();
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.JWT_SECRET,
