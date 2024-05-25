@@ -21,6 +21,22 @@ function getGoogleCredentials(): { clientId: string; clientSecret: string } {
   return { clientId, clientSecret };
 }
 
+export function getSupabaseCredentials(): { supabaseUrl: string; supabaseAnonKey: string } {
+  const url = String(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const key = String(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  if (!url || url.length === 0) {
+    throw new Error("Missing SUPABASE URL");
+  }
+
+  if (!key || key.length === 0) {
+    throw new Error("Missing SUPABASE KEY");
+  }
+
+  return { supabaseUrl: url, supabaseAnonKey : key };
+}
+
+
+
 export const authOptions: NextAuthOptions = {
   secret: process.env.JWT_SECRET,
   //adapter: PrismaAdapter(prismadb),
